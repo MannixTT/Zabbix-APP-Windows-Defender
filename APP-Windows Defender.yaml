@@ -1,0 +1,579 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: 23e0808d1d184a179c43364f165ea8a8
+      template: 'APP-Windows Defender by Zabbix Agent 2 active'
+      name: 'APP-Windows Defender by Zabbix Agent 2 active'
+      description: |
+        ## Overview
+        
+        Template utilizes **MSFT\_MpComputerStatus** class in Windows WMI to collect information about Windows Defender, such as:
+        
+        
+        * Antivirus Enabled/Disabled
+        * RealTimeProtection Enabled/Disabled
+        * BehaviorMonitor Enabled/Disabled
+        * OnAccessProtection Enabled/Disabled
+        * IoavProtection Enabled/Disabled
+        * Antispyware Enabled/Disabled
+        * RealTimeProtection Enabled/Disabled
+        * NIS Enabled/Disabled
+        * Age of last Full/Quick scans
+        * Last Date of scans
+        * Computer State
+        * Age of Signatures
+        
+        
+        All WMI information is gathered from official Microsoft documentation.
+        
+        
+        Keep in mind, that his might not work with Older Windows versions.
+        
+        
+        ## Author
+        
+        Zabbix CookBook
+        
+        Adapted by MannixTT
+        Added features:
+        - Dashboards
+        - Event Viewer Monitoring
+      groups:
+        - name: Templates
+      items:
+        - uuid: f5e31ce2ada94e7f86c9f642f1b7b325
+          name: MALWAREPROTECTION_SCAN_CANCELLED
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1002,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+          triggers:
+            - uuid: f831b07ab64d4137920042cfecd4f509
+              expression: 'logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1002,,skip],,1002)<>0'
+              name: 'An antimalware scan was stopped before it finished on {HOST.HOST}'
+              priority: WARNING
+              manual_close: 'YES'
+        - uuid: 0ce8f1a3ee044113bb43d16f3d424d4f
+          name: MALWAREPROTECTION_SCAN_PAUSED
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1003,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+        - uuid: a9d68b5b2fe04f75ac77a0164d253a46
+          name: MALWAREPROTECTION_SCAN_RESUMED
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1004,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+        - uuid: 86b0e096e7a347c2b12d1935369429aa
+          name: MALWAREPROTECTION_SCAN_FAILED
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1005,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+          triggers:
+            - uuid: d4f33d84434b4148a5cc8e74f6988f12
+              expression: 'logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1005,,skip],,1005)<>0'
+              name: 'An antimalware scan failed on {HOST.HOST}'
+              priority: WARNING
+        - uuid: 926296d33fe44cdc9d9ef584651d5ff7
+          name: MALWAREPROTECTION_MALWARE_DETECTED
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1006,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+        - uuid: ed298239f3874dc8b041fced85eba5d6
+          name: MALWAREPROTECTION_MALWARE_ACTION_TAKEN
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1007,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+        - uuid: 04be7217f10c473b9347e7a0a1a9d6af
+          name: MALWAREPROTECTION_MALWARE_ACTION_FAILED
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1008,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+        - uuid: af2592f444b8423d9b29610eee2b049f
+          name: MALWAREPROTECTION_BEHAVIOR_DETECTED
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1015,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+          triggers:
+            - uuid: ef848915256c409f8afbf112ca8a2825
+              expression: 'logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1015,,skip],,1015)<>0'
+              name: 'The antimalware platform detected suspicious behavior on {HOST.HOST}'
+              priority: HIGH
+        - uuid: 7e7ecfd8ed76422b96f865c1da4fc6cf
+          name: MALWAREPROTECTION_STATE_MALWARE_DETECTED
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1116,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+        - uuid: 639e720c134247f4ae7d84160f710d01
+          name: MALWAREPROTECTION_STATE_MALWARE_ACTION_TAKEN
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1117,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+        - uuid: f36136d874474557933c82ffdd4a17a7
+          name: MALWAREPROTECTION_STATE_MALWARE_ACTION_FAILED
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1118,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+        - uuid: 1bc27058127344ce9554a54cbc3936b2
+          name: MALWAREPROTECTION_STATE_MALWARE_ACTION_CRITICALLY_FAILED
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1119,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+          triggers:
+            - uuid: 1abdfc22285a4c64a6534b4442035883
+              expression: 'logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1119,,skip],,1119)<>0'
+              name: 'The antimalware platform encountered a critical error when trying to take action on malware or other potentially unwanted software on {HOST.HOST}'
+              priority: DISASTER
+        - uuid: 78b0b5a8c79a46f08820ea639e690d2e
+          name: MALWAREPROTECTION_FOLDER_GUARD_SECTOR_BLOCK
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1127,,skip]'
+          delay: 5m
+          value_type: LOG
+          tags:
+            - tag: Application
+              value: 'Windows Defender'
+          triggers:
+            - uuid: 7f878c158c644ebeb4052dc124b27397
+              expression: 'logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1127,,skip],,1127)<>0'
+              name: 'Controlled Folder Access(CFA) blocked an untrusted process from making changes to the memory on {HOST.HOST}'
+              priority: HIGH
+        - uuid: 53fd7bad68d44ff1910db50eda393e23
+          name: 'Anti Spyware Protection Enabled'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select AntispywareEnabled from MSFT_MpComputerStatus"]'
+          delay: 1h
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: Features
+          triggers:
+            - uuid: ca7f1fe3c605446a94a632a0447e9663
+              expression: 'find(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select AntispywareEnabled from MSFT_MpComputerStatus"],,"like","True")<>1'
+              name: 'Anti Spyware Disabled on {HOST.HOST}'
+              priority: WARNING
+        - uuid: efcfadefbf5c461f95ee191a614e9b67
+          name: 'Anti Spyware Signature Age'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select AntispywareSignatureAge from MSFT_MpComputerStatus"]'
+          delay: 3h
+          units: days
+          tags:
+            - tag: Application
+              value: 'Scan Ages'
+          triggers:
+            - uuid: 16379e121035499d98af0d0d08517240
+              expression: 'last(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select AntispywareSignatureAge from MSFT_MpComputerStatus"])>5'
+              name: 'Anti Spyware Signature was not updated for more then 5 days on {HOST.HOST}'
+              priority: HIGH
+        - uuid: d382c8772b1e43eb9af93cadbfb8127c
+          name: 'Anti Spyware Signature Last updated'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select AntispywareSignatureLastUpdated from MSFT_MpComputerStatus"]'
+          delay: 3h
+          value_type: TEXT
+          preprocessing:
+            - type: REGEX
+              parameters:
+                - '([0-9]+)'
+                - \1
+          tags:
+            - tag: Application
+              value: 'Scan Ages'
+        - uuid: 38698bdbd961412394c83bb8f207b63d
+          name: 'Antivirus Enabled'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select AntivirusEnabled from MSFT_MpComputerStatus"]'
+          delay: 1h
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: Features
+          triggers:
+            - uuid: 92347c34e4d1498d8d8be1dc657f7574
+              expression: 'find(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select AntivirusEnabled from MSFT_MpComputerStatus"],,"like","True")<>1'
+              name: 'Anti Virus Disabled on {HOST.HOST}'
+              priority: WARNING
+        - uuid: 7e41f4dc5a974310be1e74cbcdce6cf9
+          name: 'Antivirus Signature Age'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select AntivirusSignatureAge from MSFT_MpComputerStatus"]'
+          delay: 3h
+          units: days
+          tags:
+            - tag: Application
+              value: 'Scan Ages'
+          triggers:
+            - uuid: 62853eb231a3480faa3444f8267704fe
+              expression: 'last(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select AntivirusSignatureAge from MSFT_MpComputerStatus"])>5'
+              name: 'Anti Virus Signature was not updated for more then 5 days on {HOST.HOST}'
+              priority: HIGH
+        - uuid: 4918479357f845548a3ad4047c74ce09
+          name: 'Antivirus Signature Last updated'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select AntivirusSignatureLastUpdated from MSFT_MpComputerStatus"]'
+          delay: 3h
+          value_type: TEXT
+          preprocessing:
+            - type: REGEX
+              parameters:
+                - '([0-9]+)'
+                - \1
+          tags:
+            - tag: Application
+              value: 'Scan Ages'
+        - uuid: a80b7d6e71c94d148e9b5f1e343d70d7
+          name: 'Behavior Monitor Enabled'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select BehaviorMonitorEnabled from MSFT_MpComputerStatus"]'
+          delay: 1h
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: Features
+          triggers:
+            - uuid: c24ad2e784aa44409218741ae3b08c53
+              expression: 'find(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select BehaviorMonitorEnabled from MSFT_MpComputerStatus"],,"like","True")<>1'
+              name: 'Behavior Monitor Disabled on {HOST.HOST}'
+              priority: WARNING
+        - uuid: bf90f423fc884f08a6e79474b93a5d5a
+          name: 'Current computer state'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select ComputerState  from MSFT_MpComputerStatus"]'
+          delay: 10m
+          tags:
+            - tag: Application
+              value: 'Computer State'
+          triggers:
+            - uuid: c6c671268da543babd21cc40cbe66557
+              expression: 'last(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select ComputerState  from MSFT_MpComputerStatus"])=16'
+              name: 'Windows Defender has failed critically on {HOST.HOST}'
+              priority: HIGH
+        - uuid: 7516fd762a1b42d48ecb53d92cfa2e8c
+          name: 'Full Scan Age'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select FullScanAge from MSFT_MpComputerStatus"]'
+          delay: 3h
+          units: '!days'
+          tags:
+            - tag: Application
+              value: 'Scan Ages'
+          triggers:
+            - uuid: 2c1e4b794e544575b17f253d839c0773
+              expression: 'last(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select FullScanAge from MSFT_MpComputerStatus"])>5'
+              name: 'Full Scan was not performed for more then 5 days on {HOST.HOST}'
+              priority: AVERAGE
+        - uuid: 4b32896faae44bb5a2eb1a74b1c7f186
+          name: 'Ioav Protection Enabled'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select IoavProtectionEnabled from MSFT_MpComputerStatus"]'
+          delay: 1h
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: Features
+          triggers:
+            - uuid: f198f5082d874a11a1de4153d79cd753
+              expression: 'find(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select IoavProtectionEnabled from MSFT_MpComputerStatus"],,"like","True")<>1'
+              name: 'Ioav Protection Disabled on {HOST.HOST}'
+              priority: WARNING
+        - uuid: 91d7a7dc167e4272b381574331ee8504
+          name: 'NIS Protection Enabled'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select NISEnabled from MSFT_MpComputerStatus"]'
+          delay: 1h
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: Features
+          triggers:
+            - uuid: e97d30c875a2492d80925ad435525ace
+              expression: 'find(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select NISEnabled from MSFT_MpComputerStatus"],,"like","True")<>1'
+              name: 'NIS Protection Disabled on {HOST.HOST}'
+              priority: WARNING
+        - uuid: 1d84d26c24514d5ebaaaeea01808f3fd
+          name: 'NIIS Signature Age'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select NISSignatureAge from MSFT_MpComputerStatus"]'
+          delay: 3h
+          units: days
+          tags:
+            - tag: Application
+              value: 'Scan Ages'
+          triggers:
+            - uuid: 4c034af7515a46ea907a250f7caccce4
+              expression: 'last(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select NISSignatureAge from MSFT_MpComputerStatus"])>5'
+              name: 'NIIS Signature was not updated for more then 5 days on {HOST.HOST}'
+              priority: HIGH
+        - uuid: b4efe6bc24034e919253f85309f57634
+          name: 'NIS Signature Last updated'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select NISSignatureLastUpdated from MSFT_MpComputerStatus"]'
+          delay: 3h
+          value_type: TEXT
+          preprocessing:
+            - type: REGEX
+              parameters:
+                - '([0-9]+)'
+                - \1
+          tags:
+            - tag: Application
+              value: 'Scan Ages'
+        - uuid: 6d4fb2634adb474e89ed790b2770ece8
+          name: 'OnAccess Protection Enabled'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select OnAccessProtectionEnabled from MSFT_MpComputerStatus"]'
+          delay: 1h
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: Features
+          triggers:
+            - uuid: 8a02e4cc482944969a4ad407d7205fd7
+              expression: 'find(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select OnAccessProtectionEnabled from MSFT_MpComputerStatus"],,"like","True")<>1'
+              name: 'OnAccess Protection Disabled on {HOST.HOST}'
+              priority: WARNING
+        - uuid: 09f2269b315440afb648de6627b54437
+          name: 'Quick Scan Age'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select QuickScanAge  from MSFT_MpComputerStatus"]'
+          delay: 3h
+          units: days
+          tags:
+            - tag: Application
+              value: 'Scan Ages'
+          triggers:
+            - uuid: 433973c35ca8472f804a3145c1c16944
+              expression: 'last(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select QuickScanAge  from MSFT_MpComputerStatus"])>3'
+              name: 'Quick Scan was not performed for more then 3 days on {HOST.HOST}'
+              priority: AVERAGE
+        - uuid: 96561d14da614311b2bd3746f90eda0a
+          name: 'Real Time Protection Enabled'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["root\microsoft\windows\defender","select RealTimeProtectionEnabled from MSFT_MpComputerStatus"]'
+          delay: 1h
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: Features
+          triggers:
+            - uuid: fd190b37d41c4b3f938aa58eb9d1b827
+              expression: 'find(/APP-Windows Defender by Zabbix Agent 2 active/wmi.get["root\microsoft\windows\defender","select RealTimeProtectionEnabled from MSFT_MpComputerStatus"],,"like","True")<>1'
+              name: 'Real Time Protection Disabled on {HOST.HOST}'
+              priority: WARNING
+      tags:
+        - tag: class
+          value: software
+        - tag: target
+          value: 'windows defender'
+      dashboards:
+        - uuid: 4db71769799d48ed89d6eb140d04bb59
+          name: 'Windows Defender'
+          pages:
+            - widgets:
+                - type: honeycomb
+                  name: 'Age of Signature Updates'
+                  width: '41'
+                  height: '5'
+                  fields:
+                    - type: STRING
+                      name: items.0
+                      value: 'Anti Spyware Signature Age'
+                    - type: STRING
+                      name: items.1
+                      value: 'Antivirus Signature Age'
+                    - type: STRING
+                      name: items.2
+                      value: 'NIIS Signature Age'
+                    - type: STRING
+                      name: primary_label
+                      value: '{ITEM.NAME}'
+                    - type: STRING
+                      name: reference
+                      value: WYXWW
+                    - type: INTEGER
+                      name: secondary_label_decimal_places
+                      value: '0'
+                    - type: STRING
+                      name: thresholds.0.color
+                      value: 00FF00
+                    - type: STRING
+                      name: thresholds.0.threshold
+                      value: '1'
+                    - type: STRING
+                      name: thresholds.1.color
+                      value: FFFF00
+                    - type: STRING
+                      name: thresholds.1.threshold
+                      value: '2'
+                    - type: STRING
+                      name: thresholds.2.color
+                      value: FFBF00
+                    - type: STRING
+                      name: thresholds.2.threshold
+                      value: '3'
+                    - type: STRING
+                      name: thresholds.3.color
+                      value: FF465C
+                    - type: STRING
+                      name: thresholds.3.threshold
+                      value: '5'
+                - type: honeycomb
+                  name: 'Protection States'
+                  'y': '5'
+                  width: '41'
+                  height: '7'
+                  fields:
+                    - type: STRING
+                      name: items.0
+                      value: 'Anti Spyware Protection Enabled'
+                    - type: STRING
+                      name: items.1
+                      value: 'Antivirus Enabled'
+                    - type: STRING
+                      name: items.2
+                      value: 'Behavior Monitor Enabled'
+                    - type: STRING
+                      name: items.3
+                      value: 'Ioav Protection Enabled'
+                    - type: STRING
+                      name: items.4
+                      value: 'NIS Protection Enabled'
+                    - type: STRING
+                      name: items.5
+                      value: 'OnAccess Protection Enabled'
+                    - type: STRING
+                      name: items.6
+                      value: 'Real Time Protection Enabled'
+                    - type: STRING
+                      name: primary_label
+                      value: '{ITEM.NAME}'
+                    - type: STRING
+                      name: reference
+                      value: RZMOR
+                    - type: STRING
+                      name: thresholds.0.color
+                      value: FF465C
+                    - type: STRING
+                      name: thresholds.0.threshold
+                      value: '0'
+                    - type: STRING
+                      name: thresholds.1.color
+                      value: 80FF00
+                    - type: STRING
+                      name: thresholds.1.threshold
+                      value: '1'
+                - type: honeycomb
+                  name: 'Age of Windows Defender Scan'
+                  'y': '12'
+                  width: '41'
+                  height: '5'
+                  fields:
+                    - type: STRING
+                      name: items.0
+                      value: 'Full Scan Age'
+                    - type: STRING
+                      name: items.1
+                      value: 'Quick Scan Age'
+                    - type: STRING
+                      name: primary_label
+                      value: '{ITEM.NAME}'
+                    - type: STRING
+                      name: reference
+                      value: UNXQU
+                    - type: INTEGER
+                      name: secondary_label_decimal_places
+                      value: '0'
+                    - type: STRING
+                      name: thresholds.0.color
+                      value: 00FF00
+                    - type: STRING
+                      name: thresholds.0.threshold
+                      value: '0'
+                    - type: STRING
+                      name: thresholds.1.color
+                      value: FFD54F
+                    - type: STRING
+                      name: thresholds.1.threshold
+                      value: '7'
+                    - type: STRING
+                      name: thresholds.2.color
+                      value: FFBF00
+                    - type: STRING
+                      name: thresholds.2.threshold
+                      value: '14'
+                    - type: STRING
+                      name: thresholds.3.color
+                      value: FF465C
+                    - type: STRING
+                      name: thresholds.3.threshold
+                      value: '30'
+  triggers:
+    - uuid: 5cd084a37cff4f1e9f778ea674200929
+      expression: 'logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1003,,skip],,1003)=1'
+      recovery_mode: RECOVERY_EXPRESSION
+      recovery_expression: 'logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1004,,skip],,1004)=1'
+      name: 'An antimalware scan was paused on {HOST.HOST}'
+      priority: WARNING
+      manual_close: 'YES'
+    - uuid: af4d89be5214405286bc68405d478fe6
+      expression: 'logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1006,,skip],,1006)<>0 or logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1116,,skip],,1116)<>0'
+      name: 'The antimalware engine found malware or other potentially unwanted software on {HOST.HOST}'
+      priority: HIGH
+    - uuid: 887bdfb38eda4158b4eea72fc802f4d6
+      expression: 'logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1008,,skip],,1008)<>0 or logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1118,,skip],,1118)<>0'
+      name: 'The antimalware platform attempted to perform an action to protect your system from malware or other potentially unwanted software, but the action failed on {HOST.HOST}'
+      priority: DISASTER
+    - uuid: 84b56333ab774102a5be23104ab9f146
+      expression: 'logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1007,,skip],,1007)<>0 or logeventid(/APP-Windows Defender by Zabbix Agent 2 active/eventlog[Microsoft-Windows-Windows Defender/Operational,,,,1117,,skip],,1117)<>0'
+      name: 'The antimalware platform performed an action to protect your system from malware or other potentially unwanted software on {HOST.HOST}'
+      priority: HIGH
